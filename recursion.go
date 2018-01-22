@@ -1,6 +1,6 @@
 /******************************************************************************/
 /*
-* @file   main.go
+* @file   recursion.go
 * @author Aditya Harsh
 * @email  mrsaturnsan@gmail.com
 * @brief  Given a set of numbers, the program returns the sum of their squares.
