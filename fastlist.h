@@ -152,7 +152,12 @@ namespace atl
         {
                 try
                 {
-                    (static_cast<void>(emplace_back(args)), ...);
+                    #if __cplusplus==201703L
+                        (static_cast<void>(emplace_back(args)), ...);
+                    #elif __cplusplus==201103L
+                        T dummy[]{(emplace_back(std::forward<Args>(args)))...};
+                        static_cast<void>(dummy);
+                    #endif         
                 }
                 catch(...)
                 {
