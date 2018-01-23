@@ -10,23 +10,6 @@
 
 namespace atd
 {
-    /**
-     * @brief Exchanges any two values.
-     * 
-     * @tparam T 
-     * @tparam T 
-     * @param obj 
-     * @param new_value 
-     * @return T 
-     */
-    template <typename T, typename U = T>
-    T exchange(T& obj, U&& new_value)
-    {
-        T old_value = std::move(obj);
-        obj = std::forward<U>(new_value);
-        return old_value;
-    }
-
     template <typename T>
     class unique_ptr
     {
@@ -53,7 +36,7 @@ namespace atd
          */
         unique_ptr(unique_ptr<T>&& rhs) noexcept
         {
-            data_ = exchange(rhs.data_, nullptr);
+            data_ = std::exchange(rhs.data_, nullptr);
         }
 
         /**
@@ -74,8 +57,7 @@ namespace atd
          */
         void swap(unique_ptr<T>& rhs) noexcept
         {
-            using std::swap;
-            swap(data_, rhs.data_);
+            std::swap(data_, rhs.data_);
         }
 
         /**
