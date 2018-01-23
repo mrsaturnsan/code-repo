@@ -8,117 +8,10 @@
 
 #pragma once
 
-// Aditya's Templated Library ;)
+#include <memory>
+
 namespace atl
 {
-    /**
-     * @brief Exchanges any two values.
-     * 
-     * @tparam T 
-     * @tparam T 
-     * @param obj 
-     * @param new_value 
-     * @return T 
-     */
-    template <typename T, typename U = T>
-    T exchange(T& obj, U&& new_value)
-    {
-        T old_value = std::move(obj);
-        obj = std::forward<U>(new_value);
-        return old_value;
-    }
-
-    template <typename T>
-    class unique_ptr
-    {
-    public:
-        /**
-         * @brief Constructor.
-         * 
-         */
-        explicit unique_ptr(T* data = nullptr) noexcept : data_(data) {}
-
-        /**
-         * @brief Destructor.
-         * 
-         */
-        ~unique_ptr() noexcept
-        {
-            delete data_;
-        }
-
-        /**
-         * @brief Move constructor.
-         * 
-         * @param rhs 
-         */
-        unique_ptr(unique_ptr<T>&& rhs) noexcept
-        {
-            data_ = exchange(rhs.data_, nullptr);
-        }
-
-        /**
-         * @brief Move assignment.
-         * 
-         * @param rhs 
-         * @return unique_ptr<T>& 
-         */
-        unique_ptr<T>& operator=(unique_ptr<T>&& rhs) noexcept
-        {
-            swap(unique_ptr<T>(std::move(rhs)));
-        }
-
-        /**
-         * @brief Swaps two unique pointers.
-         * 
-         * @param rhs 
-         */
-        void swap(unique_ptr<T>& rhs) noexcept
-        {
-            using std::swap;
-            swap(data_, rhs.data_);
-        }
-
-        /**
-         * @brief Gets the raw pointer.
-         * 
-         * @return T* get 
-         */
-        T* get() noexcept
-        {
-            return data_;
-        }
-
-        /**
-         * @brief Releases the pointer.
-         * 
-         */
-        void release() noexcept
-        {
-            data_ = nullptr;
-        }
-
-    private:
-        unique_ptr(const unique_ptr<T>&) = delete;
-        unique_ptr<T>& operator=(const unique_ptr<T>&) = delete;
-
-        T* data_;
-    };
-
-    /**
-     * @brief Makes a unique pointer.
-     * 
-     * @tparam T 
-     * @tparam Args 
-     * @param args 
-     * @return unique_ptr<T> 
-     */
-    template <typename T, typename... Args>
-    unique_ptr<T> make_unique(Args&&... args)
-    {
-        return unique_ptr<T>(new T(std::forward<Args>(args)...));
-    }
-
     // forward declare
     template <typename T>
     class ListIter;
@@ -152,12 +45,7 @@ namespace atl
         {
                 try
                 {
-                    #if __cplusplus==201703L
-                        (static_cast<void>(emplace_back(args)), ...);
-                    #elif __cplusplus==201103L
-                        T dummy[]{(emplace_back(std::forward<Args>(args)))...};
-                        static_cast<void>(dummy);
-                    #endif         
+                    (static_cast<void>(emplace_back(args)), ...);
                 }
                 catch(...)
                 {
@@ -206,9 +94,9 @@ namespace atl
         FastList(FastList&& rhs) noexcept
         {
             // build the list
-            head_ = exchange(rhs.head_, nullptr);
-            tail_ = exchange(rhs.tail_, nullptr);
-            size_ = exchange(rhs.size_, 0);
+            head_ = std::exchange(rhs.head_, nullptr);
+            tail_ = std::exchange(rhs.tail_, nullptr);
+            size_ = std::exchange(rhs.size_, 0);
         }
 
         /**
@@ -308,7 +196,7 @@ namespace atl
         T& emplace_back(Args&&... args)
         {
             // allocate the node
-            unique_ptr<Node> node = make_unique<Node>(nullptr, std::forward<Args>(args)...);
+            std::unique_ptr<Node> node = std::make_unique<Node>(nullptr, std::forward<Args>(args)...);
 
             if (tail_)
             {
@@ -341,7 +229,7 @@ namespace atl
         T& emplace_front(Args&&... args)
         {
             // allocate the node
-            unique_ptr<Node> node = make_unique<Node>(nullptr, std::forward<Args>(args)...);
+            std::unique_ptr<Node> node = std::make_unique<Node>(nullptr, std::forward<Args>(args)...);
 
             Node* front = node.get();
             head_ = front;
@@ -525,9 +413,9 @@ namespace atl
          */
         void swap(FastList& other) noexcept
         {
-            head_ = exchange(other.head_, head_);
-            tail_ = exchange(other.tail_, tail_);
-            size_ = exchange(other.size_, size_);
+            head_ = std::exchange(other.head_, head_);
+            tail_ = std::exchange(other.tail_, tail_);
+            size_ = std::exchange(other.size_, size_);
         }
 
         /**
