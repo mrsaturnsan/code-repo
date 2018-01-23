@@ -293,7 +293,9 @@ namespace atl
             // reset values
             head_ = nullptr;
             tail_ = nullptr;
+            last_ = nullptr;
             size_ = 0;
+            last_index_ = 0;
         }
 
         /**
