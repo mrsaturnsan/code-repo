@@ -290,7 +290,10 @@ namespace atl
                 delete current;
             }
 
+            // reset values
+            head_ = nullptr;
             tail_ = nullptr;
+            size_ = 0;
         }
 
         /**
@@ -430,7 +433,7 @@ namespace atl
                 }
 
                 Node* target = last_->next_;
-                last_->next = target->next_;
+                last_->next_ = target->next_;
                 delete target;
 
                 return;
@@ -446,7 +449,12 @@ namespace atl
             if (target == tail_)
                 tail_ = temp;
 
+            // delete the node
             delete target;
+
+            // set last values
+            last_ = temp;
+            last_index_ = index - 1;
         }
 
         /**
@@ -558,11 +566,16 @@ namespace atl
         // size of the list
         unsigned size_;
 
-        // speeds up the subscript operator
+        // speeds up observing
         Node* last_;
         unsigned last_index_;
     };
 
+    /**
+     * @brief Iterator class for the list
+     * 
+     * @tparam T 
+     */
     template <typename T>
     class ListIter
     {
