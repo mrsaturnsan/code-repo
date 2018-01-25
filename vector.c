@@ -2,7 +2,7 @@
 /*
 * @file   vector.h
 * @author Aditya Harsh
-* @brief  Smart vector functionality. Allows vectors of any type to be created.
+* @brief  Smart vector functionality. Written in ANSI C.
 */
 /******************************************************************************/
 
@@ -39,11 +39,12 @@ struct vector
 static void copy_vector_shallow(vector** destination, const vector* source);
 
 /**
- * @brief Allocates a vector of ints.
+ * @brief Allocates a vector of any type of elements.
  * 
- * @param capacity 
+ * @param capacity
  * @param data_size
- * @return vector* 
+ * @param data_type
+ * @param func
  */
 vector* alloc_vector(unsigned capacity, unsigned data_size, const char* data_type, PRINTFUNC func)
 {
@@ -275,7 +276,6 @@ void pop_front(vector* vec)
  * 
  * @param destination 
  * @param source 
- * @param shallow
  */
 void copy_vector(vector** destination, const vector* source)
 {
