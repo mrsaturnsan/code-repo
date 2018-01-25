@@ -2,7 +2,7 @@
 /*
 * @file   vector.h
 * @author Aditya Harsh
-* @brief  Smart vector functionality. Allows vectors of any type to be created.
+* @brief  Smart vector functionality. Written in ANSI C.
 */
 /******************************************************************************/
 
