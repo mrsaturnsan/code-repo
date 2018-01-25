@@ -2,7 +2,7 @@
 /*
 * @file   vector.h
 * @author Aditya Harsh
-* @brief  Smart vector functionality. Written in ANSI C.
+* @brief  Smart vector functionality. Allows vectors of any type to be created.
 */
 /******************************************************************************/
 
@@ -474,7 +474,7 @@ void remove_element(vector* vec, unsigned index)
  * @param index 
  * @return void* 
  */
-void* get(const vector* vec, unsigned index)
+void* vector_get(const vector* vec, unsigned index)
 {
     if (!vec || index >= vec->size_) return NULL;
 
