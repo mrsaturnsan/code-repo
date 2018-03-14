@@ -67,7 +67,7 @@ namespace InputParse
                         std::vector<T> line_data ((std::istream_iterator<T>(is)), std::istream_iterator<T>());
                         
                         // store data
-                        data_.back().insert(std::end(data_.back()), std::begin(line_data), std::end(line_data));
+                        data_.back().insert(std::end(data_.back()), std::cbegin(line_data), std::cend(line_data));
                     }
                 }
             }
