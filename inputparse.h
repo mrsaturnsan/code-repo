@@ -63,9 +63,6 @@ namespace InputParse
                         // read all strings on the line
                         std::istringstream is(str);
 
-                        // reserve space
-                        data_.back().reserve(std::stoul(str) + 1);
-
                         // get the data on the line
                         std::vector<T> line_data ((std::istream_iterator<T>(is)), std::istream_iterator<T>());
                         
