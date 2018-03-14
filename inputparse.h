@@ -2,7 +2,7 @@
 /*
 * @file   inputparse.h
 * @author Aditya Harsh
-* @brief  Input parsing header (useful for online coding challenges).
+* @brief  Input parsing header.
 */
 /******************************************************************************/
 
@@ -12,80 +12,55 @@
 #include <iterator>  /* std::istream_iterator            */
 
 /**
- * @brief Input parsing class to allow for easy reading of files (esp. coding challenge input ;) )
+ * @brief Input parsing to allow for easy reading of files.
  * 
  */
 namespace InputParse
 {
     /**
-     * @brief The type to store each input as.
+     * @brief Returns a vector of vector of data.
      * 
-     * @tparam T 
+     * @param file_name 
      */
     template <typename T>
-    class Parser
+    std::vector<std::vector<T>> Parse(const std::string& file_name)
     {
-        public:
-            /**
-             * @brief Construct a new Parser object.
-             * 
-             * @param file_name 
-             */
-            Parser(const std::string& file_name)
-            {
-                // open file
-                std::ifstream input(file_name);
+        // data to create
+        std::vector<std::vector<T>> data;
 
-                // make sure file is valid
-                if (input.good())
+        std::ifstream input(file_name);
+
+        // make sure file is valid
+        if (input.good())
+        {
+            std::string str;
+
+            std::getline(input, str);
+
+            auto cases = std::stoul(str); // get the total number of cases to account for
+
+            data.reserve(cases);
+
+            while (std::getline(input, str))
+            {
+                // ignore blanks
+                if (str.empty())
                 {
-                    // string to write into
-                    std::string str;
+                    if (data.size() >= cases) break;
 
-                    // get the first line
-                    std::getline(input, str);
-
-                    auto cases = std::stoul(str); // get the total number of cases to account for
-
-                    data_.reserve(cases); // reserve space in advance
-
-                    while (std::getline(input, str))
-                    {
-                        // ignore blanks
-                        if (str.empty())
-                        {
-                            // full
-                            if (data_.size() >= cases) break;
-
-                            // otherwise
-                            data_.emplace_back(std::vector<T>());
-                            continue;
-                        }
-
-                        // read all strings on the line
-                        std::istringstream is(str);
-
-                        // get the data on the line
-                        std::vector<T> line_data ((std::istream_iterator<T>(is)), std::istream_iterator<T>());
-                        
-                        // store data
-                        data_.back().insert(std::end(data_.back()), std::cbegin(line_data), std::cend(line_data));
-                    }
+                    data.emplace_back(std::vector<T>());
+                    continue;
                 }
-            }
 
-            /**
-             * @brief Get the data acquired from the input.
-             * 
-             * @return std::vector<std::vector<T>>& 
-             */
-            std::vector<std::vector<T>>& Get() noexcept
-            {
-                return data_;
-            }
+                std::istringstream is(str);
 
-        private:
-            // the raw data
-            std::vector<std::vector<T>> data_;
-    };
+                // get the data on the line
+                std::vector<T> line_data ((std::istream_iterator<T>(is)), std::istream_iterator<T>());
+                
+                data.back().insert(std::end(data.back()), std::cbegin(line_data), std::cend(line_data));
+            }
+        }
+
+        return data;
+    }
 }
