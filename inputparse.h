@@ -35,11 +35,13 @@ namespace InputParse
             {
                 // open file
                 std::ifstream input(file_name);
-                std::string str;
 
                 // make sure file is valid
                 if (input.good())
                 {
+                    // string to write into
+                    std::string str;
+
                     // get the first line
                     std::getline(input, str);
 
