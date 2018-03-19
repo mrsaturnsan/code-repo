@@ -42,11 +42,15 @@
 #define list(type) EVALUATE(list,type)
 #define l_node(type) EVALUATE(l_node,type)
 
+/* define booleans */
+typedef enum {false = 0, true = 1} bool;
+
 /* call to setup the type */
 #define init_list(type)                                                                     \
                                                                                             \
 typedef struct l_node(type) l_node(type);                                                   \
 typedef void (*EVALUATE(call_back,type)) (type*);                                           \
+typedef bool (*compare)(const type*, const type*);                                          \
                                                                                             \
 struct l_node(type)                                                                         \
 {                                                                                           \
@@ -275,6 +279,65 @@ void EVALUATE(reverse,list(type)) (list(type) * list)                           
                                                                                             \
     list->head_ = prev;                                                                     \
 }                                                                                           \
+                                                                                            \
+void EVALUATE(erase_element,list(type)) (list(type) * list, type value)                     \
+{                                                                                           \
+    l_node(type) * prev = NULL;                                                             \
+    l_node(type) * next = NULL;                                                             \
+    l_node(type) * curr;                                                                    \
+                                                                                            \
+    if (!list || !list->head_) return;                                                      \
+                                                                                            \
+    curr = list->head_;                                                                     \
+                                                                                            \
+    while (curr)                                                                            \
+    {                                                                                       \
+        next = curr->next_;                                                                 \
+        if (curr->data_ == value)                                                           \
+        {                                                                                   \
+            if (curr == list->head_)                                                        \
+                list->head_ = next;                                                         \
+            else if (curr == list->tail_)                                                   \
+                list->tail_ = NULL;                                                         \
+            free(curr);                                                                     \
+            if (prev)                                                                       \
+                prev->next_ = next;                                                         \
+            break;                                                                          \
+        }                                                                                   \
+        prev = curr;                                                                        \
+        curr = next;                                                                        \
+    }                                                                                       \
+}                                                                                           \
+                                                                                            \
+void EVALUATE(erase_element_custom,list(type)) (list(type) * list, const type * value,      \
+             compare comp)                                                                  \
+{                                                                                           \
+    l_node(type) * prev = NULL;                                                             \
+    l_node(type) * next = NULL;                                                             \
+    l_node(type) * curr;                                                                    \
+                                                                                            \
+    if (!list || !list->head_ || !value) return;                                            \
+                                                                                            \
+    curr = list->head_;                                                                     \
+                                                                                            \
+    while (curr)                                                                            \
+    {                                                                                       \
+        next = curr->next_;                                                                 \
+        if (comp(&curr->data_, value))                                                      \
+        {                                                                                   \
+            if (curr == list->head_)                                                        \
+                list->head_ = next;                                                         \
+            else if (curr == list->tail_)                                                   \
+                list->tail_ = NULL;                                                         \
+            free(curr);                                                                     \
+            if (prev)                                                                       \
+                prev->next_ = next;                                                         \
+            break;                                                                          \
+        }                                                                                   \
+        prev = curr;                                                                        \
+        curr = next;                                                                        \
+    }                                                                                       \
+}                                                                                           \
 
 /* Uniform function call syntax for all lists */
 #define create_list(type) EVALUATE(create,list(type)) ()
@@ -302,3 +365,7 @@ void EVALUATE(reverse,list(type)) (list(type) * list)                           
 #define foreach_list(type, _list, _func) EVALUATE(foreach,list(type)) (&_list, _func)
 /* reverses a list */
 #define reverse_list(type, _list) EVALUATE(reverse,list(type)) (&_list)
+/* searches for and removes an element in the list */
+#define erase_element_list(type, _list, _value) EVALUATE(erase_element,list(type)) (&_list, _value)
+/* searches for and removes an element in the list (custom type) */
+#define erase_element_custom_list(type, _list, _value, _func) EVALUATE(erase_element_custom,list(type)) (&_list, &_value, _func)
